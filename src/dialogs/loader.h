@@ -1,5 +1,6 @@
 #pragma once
 
+#include "models/loaderoptions.h"
 #include "ui/loaderdialog.h"
 #include <QDialog>
 #include <redasm/redasm.h>
@@ -25,10 +26,11 @@ private:
     void populate_processors() const;
 
 public:
-    const RDTestResult* sel_test{nullptr};
+    RDTestResult* sel_test{nullptr};
     RDAcceptParams accept_params{};
 
 private:
     ui::LoaderDialog m_ui;
+    LoaderOptionsModel* m_loaderoptionsmodel;
     RDTestResultSlice m_testslice{};
 };

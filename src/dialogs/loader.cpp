@@ -8,6 +8,14 @@ LoaderDialog::LoaderDialog(RDTestResultSlice ctxslice, QWidget* parent)
     utils::configure_hex_input(m_ui.leaddress);
     utils::configure_hex_input(m_ui.leoffset);
 
+    m_ui.pbresetoptions->setVisible(false);
+
+    m_loaderoptionsmodel = new LoaderOptionsModel(m_ui.tvoptions);
+    m_ui.tvoptions->setModel(m_loaderoptionsmodel);
+    m_ui.tvoptions->header()->setSectionResizeMode(
+        0, QHeaderView::ResizeToContents);
+    m_ui.tvoptions->header()->setSectionResizeMode(1, QHeaderView::Stretch);
+
     this->accept_params.min_string = RD_MIN_STRING_LENGTH;
 
     m_ui.gbaddressing->setEnabled(false);
@@ -47,6 +55,12 @@ LoaderDialog::LoaderDialog(RDTestResultSlice ctxslice, QWidget* parent)
     connect(m_ui.leoffset, &QLineEdit::textChanged, this,
             &LoaderDialog::update_offset);
 
+    connect(m_ui.pbresetoptions, &QPushButton::clicked, m_loaderoptionsmodel,
+            &LoaderOptionsModel::reset_default);
+
+    connect(m_ui.tabs, &QTabWidget::currentChanged, this,
+            [&](int index) { m_ui.pbresetoptions->setVisible(index == 1); });
+
     // Trigger "on_loader_changed"
     if(!rd_slice_is_empty(m_testslice)) m_ui.lwloaders->setCurrentRow(0);
 
@@ -64,6 +78,11 @@ void LoaderDialog::on_loader_changed(int currentrow) {
         const RDProcessorPlugin* p =
             rd_testresult_get_processor_plugin(this->sel_test);
 
+        RDLoaderOptionSlice opts = rd_testresult_get_options(this->sel_test);
+        m_ui.tabs->tabBar()->setTabEnabled(1, !rd_slice_is_empty(opts));
+        m_loaderoptionsmodel->set_test_result(this->sel_test);
+        m_ui.tvoptions->expandAll();
+
         m_ui.gbaddressing->setEnabled(m_ui.rbnewanalysis->isChecked() &&
                                       (l->flags & RD_LF_MANUAL));
 
@@ -77,6 +96,8 @@ void LoaderDialog::on_loader_changed(int currentrow) {
         m_ui.cbprocessors->setCurrentIndex(-1);
     }
     else {
+        m_ui.tabs->tabBar()->setTabEnabled(1, false);
+        m_ui.tabs->setCurrentIndex(0);
         m_ui.gbaddressing->setEnabled(false);
         this->sel_test = nullptr;
     }

@@ -7,11 +7,15 @@
 #include <QDialogButtonBox>
 #include <QFormLayout>
 #include <QGroupBox>
+#include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
+#include <QPushButton>
 #include <QRadioButton>
 #include <QSpinBox>
+#include <QTabWidget>
+#include <QTreeView>
 
 namespace ui {
 
@@ -22,7 +26,10 @@ struct LoaderDialog {
     QSpinBox* sbminstring;
     QRadioButton *rbnewanalysis, *rbopenproject;
     QLineEdit *leentrypoint, *leoffset, *leaddress;
+    QTabWidget* tabs;
+    QTreeView* tvoptions;
     QDialogButtonBox* buttonbox;
+    QPushButton* pbresetoptions;
 
     explicit LoaderDialog(QDialog* self) {
         self->setWindowTitle("Loader");
@@ -33,6 +40,9 @@ struct LoaderDialog {
         this->setup_top(vbox);
         this->setup_bottom(vbox);
 
+        this->pbresetoptions = new QPushButton();
+        this->pbresetoptions->setText("Reset options");
+
         this->buttonbox = new QDialogButtonBox(QDialogButtonBox::Ok |
                                                QDialogButtonBox::Cancel);
 
@@ -41,7 +51,11 @@ struct LoaderDialog {
         QObject::connect(this->buttonbox, &QDialogButtonBox::rejected, self,
                          &QDialog::reject);
 
-        vbox->addWidget(this->buttonbox);
+        auto* hbox = new QHBoxLayout();
+        hbox->addWidget(this->pbresetoptions);
+        hbox->addWidget(this->buttonbox, 1);
+
+        vbox->addLayout(hbox);
     }
 
 private:
@@ -55,10 +69,22 @@ private:
     }
 
     void setup_bottom(QVBoxLayout* l) {
-        auto* vbox = new QVBoxLayout();
+        this->tabs = new QTabWidget();
+
+        auto* vbox = new QVBoxLayout(new QWidget());
         this->setup_loader_part(vbox);
         this->setup_addressing_part(vbox);
-        l->addLayout(vbox);
+
+        this->tvoptions = new QTreeView();
+        this->tvoptions->setFrameShape(QFrame::NoFrame);
+        this->tvoptions->setUniformRowHeights(true);
+        this->tvoptions->setRootIsDecorated(false);
+        this->tvoptions->setWordWrap(false);
+
+        this->tabs->addTab(vbox->parentWidget(), "General");
+        this->tabs->addTab(this->tvoptions, "Options");
+
+        l->addWidget(this->tabs);
     }
 
     void setup_loader_part(QVBoxLayout* l) {
@@ -93,6 +119,7 @@ private:
         auto* vbox = new QVBoxLayout(this->gbopenmode);
         vbox->addWidget(this->rbnewanalysis);
         vbox->addWidget(this->rbopenproject);
+        vbox->addStretch();
 
         hbox->addWidget(this->gbloader, 1);
         hbox->addWidget(this->gbopenmode);

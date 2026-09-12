@@ -55,6 +55,7 @@ target_sources(${PROJECT_NAME}
         src/hexview/flagsbuffer.cpp
         src/hexview/flagsdelegate.cpp
         src/models/externals.cpp
+        src/models/loaderoptions.cpp
         src/models/functions.cpp
         src/models/mappings.cpp
         src/models/problems.cpp
