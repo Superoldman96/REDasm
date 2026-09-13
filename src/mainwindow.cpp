@@ -58,11 +58,6 @@ MainWindow::MainWindow(const RDInitParams& params, QWidget* parent)
 
     this->show_welcome_view();
 
-    connect(m_ui.mnuedit, &QMenu::aboutToShow, this, [&]() {
-        ContextView* cv = this->context_view();
-        m_ui.act_copy->setEnabled(cv && cv->surface()->has_selection());
-    });
-
     connect(m_ui.act_fileexit, &QAction::triggered, this, &MainWindow::close);
     connect(m_ui.act_fileopen, &QAction::triggered, this,
             &MainWindow::select_file);
@@ -299,7 +294,6 @@ void MainWindow::enable_context_actions(bool e) { // NOLINT
     m_ui.act_filesave->setVisible(e);
     m_ui.act_filesaveas->setVisible(e);
     m_ui.act_fileclose->setVisible(e);
-    m_ui.act_edit->setVisible(e);
     m_ui.act_view->setVisible(e);
 
     m_ui.act_goto->setVisible(e);
@@ -310,6 +304,7 @@ void MainWindow::enable_context_actions(bool e) { // NOLINT
     m_ui.act_tbseparator4->setVisible(e);
 
     m_ui.act_toolsflc->setVisible(e);
+    m_ui.act_toolsreanalyze->setVisible(e);
     m_ui.act_toolsproblems->setVisible(e);
     m_ui.act_devgraphs->setVisible(e);
     m_ui.act_viewsegmentregs->setVisible(e);

@@ -22,21 +22,21 @@ namespace ui {
 struct MainWindow {
     QStatusBar* statusbar;
     QStackedWidget* stackwidget;
-    QMenu *mnufile, *mnuedit, *mnuview, *mnutools, *mnuwindow, *mnuhelp;
+    QMenu *mnufile, *mnuview, *mnutools, *mnuwindow, *mnuhelp;
     QMenu *mnurecents, *mnuexport, *mnudev;
     QAction *act_fileopen, *act_filesave, *act_filesaveas, *act_fileexportdb,
         *act_fileexportinput, *act_fileexportpatch, *act_fileclose,
         *act_fileexit;
     QAction* act_winrestoredefault;
-    QAction *act_edit, *act_view, *act_tools;
-    QAction *act_toolsflc, *act_toolsproblems;
+    QAction *act_view, *act_tools;
+    QAction *act_toolsproblems, *act_toolsflc, *act_toolsreanalyze;
     QAction *act_devdecoder, *act_devgraphs;
     QAction *act_viewmemorymap, *act_viewsegments, *act_viewmappings,
         *act_viewsegmentregs, *act_viewstrings, *act_viewtypedefs,
         *act_viewimported, *act_viewexported;
     QAction *act_tbseparator1, *act_tbseparator2, *act_tbseparator3,
         *act_tbseparator4;
-    QAction *act_copy, *act_goto;
+    QAction* act_goto;
     ::LogView* logview;
 
     explicit MainWindow(QMainWindow* self) {
@@ -51,14 +51,10 @@ struct MainWindow {
 
         auto* menubar = new QMenuBar(self);
         this->mnufile = menubar->addMenu("&File");
-        this->mnuedit = menubar->addMenu("&Edit");
         this->mnuview = menubar->addMenu("&View");
         this->mnutools = menubar->addMenu("&Tools");
         this->mnuwindow = menubar->addMenu("&Window");
         this->mnuhelp = menubar->addMenu("&?");
-
-        this->act_edit = this->mnuedit->menuAction();
-        this->act_edit->setVisible(false);
 
         this->act_view = this->mnuview->menuAction();
         this->act_view->setVisible(false);
@@ -102,6 +98,10 @@ struct MainWindow {
             "&FLC", QKeySequence{Qt::CTRL | Qt::Key_L});
         this->act_toolsflc->setVisible(false);
 
+        this->act_toolsreanalyze = actions::create(actions::REANALYZE, self);
+        this->mnutools->addAction(this->act_toolsreanalyze);
+        this->act_toolsreanalyze->setVisible(false);
+
         this->act_tbseparator1 = this->mnutools->addSeparator();
 
         this->mnudev = this->mnutools->addMenu("Dev");
@@ -114,12 +114,6 @@ struct MainWindow {
         this->mnuhelp->addAction(actions::create(actions::OPEN_FEEDBACK, self));
         this->mnuhelp->addSeparator();
         this->mnuhelp->addAction(actions::create(actions::OPEN_ABOUT, self));
-
-        this->act_copy = actions::create(actions::COPY, self);
-        this->mnuedit->addAction(this->act_copy);
-        this->mnuedit->addAction(actions::create(actions::SELECT_ALL, self));
-        this->mnuedit->addSeparator();
-        this->mnuedit->addAction(actions::create(actions::REANALYZE, self));
         // clang-format on
 
         this->act_viewmemorymap = this->mnuview->addAction(
