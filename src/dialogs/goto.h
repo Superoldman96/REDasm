@@ -9,7 +9,6 @@
 class GotoDialog: public QDialog {
     Q_OBJECT
 
-public:
     enum class AddressingMode {
         ADDRESS = 0,
         OFFSET,
@@ -17,7 +16,6 @@ public:
 
 public:
     explicit GotoDialog(RDContext* ctx, QWidget* parent = nullptr);
-    [[nodiscard]] AddressingMode addressing_mode() const;
 
 private Q_SLOTS:
     void on_item_selected(const QModelIndex& index);
@@ -25,6 +23,7 @@ private Q_SLOTS:
     void on_mode_changed();
 
 private:
+    [[nodiscard]] AddressingMode addressing_mode() const;
     void validate_and_filter_entry();
     bool check_valid_address();
 
