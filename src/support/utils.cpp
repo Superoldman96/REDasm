@@ -98,6 +98,7 @@ QMenu* create_surface_menu(ISurface* surface) {
 
     // clang-format off
     QAction* actcopy = actions::create(actions::COPY, w);
+    QAction* actselectall = actions::create(actions::SELECT_ALL, w);
     QAction* actrefs = actions::create(actions::REFS_TO, w);
     QAction* actrename = actions::create(actions::RENAME, w);
     QAction* actcomment = actions::create(actions::COMMENT, w);
@@ -113,6 +114,8 @@ QMenu* create_surface_menu(ISurface* surface) {
 
     auto* menu = new QMenu(w);
     menu->addAction(actcopy);
+    menu->addAction(actselectall);
+    menu->addSeparator();
     menu->addAction(actrefs);
     menu->addAction(actrename);
     menu->addSeparator();
