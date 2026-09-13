@@ -26,6 +26,7 @@ void style_social_button(QToolButton* button, actions::Type t) {
     const QString SOCIAL_STYLESHEET = QString(R"(
         QToolButton { border: none; background: transparent; }
         QToolButton:hover { border: 1px solid; }
+        QToolButton::menu-indicator { image: none; }
     )");
 
     button->setToolButtonStyle(Qt::ToolButtonIconOnly);
